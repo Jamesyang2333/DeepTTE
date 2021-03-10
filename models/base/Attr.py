@@ -33,10 +33,22 @@ class Net(nn.Module):
             attr_t = attr[name].view(-1, 1)
 
             attr_t = torch.squeeze(embed(attr_t))
+            
+            # preserve the dimension when the batch only has one data point
+            if len(list(attr_t.size())) == 1:
+                attr_t = torch.unsqueeze(attr_t, 0)
 
             em_list.append(attr_t)
 
-        dist = utils.normalize(attr['dist'], 'dist')
-        em_list.append(dist.view(-1, 1))
-
+#         dist = utils.normalize(attr['dist'], 'dist')
+        em_list.append(attr['dist'].view(-1, 1))
+        
+        if em_list[3].size(0) != em_list[2].size(0) or em_list[3].size(0) != em_list[1].size(0) or em_list[3].size(0) != em_list[0].size(0):
+            print("Size mismatch!!!")
+            print(em_list[0].shape)
+            print(em_list[1].shape)
+            print(em_list[2].shape)
+            print(em_list[3].shape)
+            
+        
         return torch.cat(em_list, dim = 1)

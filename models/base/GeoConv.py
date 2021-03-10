@@ -24,10 +24,21 @@ class Net(nn.Module):
     def forward(self, traj, config):
         lngs = torch.unsqueeze(traj['lngs'], dim = 2)
         lats = torch.unsqueeze(traj['lats'], dim = 2)
-
-        states = self.state_em(traj['states'].long())
-
-        locs = torch.cat((lngs, lats, states), dim = 2)
+        
+#         print(traj)
+#         print(type(traj['avail']))
+#         print(traj['avail'].shape)
+#         print(traj['avail'])
+#         # check the validity of states field
+#         if traj['avail'].max() != 0 or traj['avail'].min() != 0:
+#             print("error!")
+#             print(traj['avail'].max())
+#             print(traj['avail'].min())
+#             print(traj['avail'])
+            
+        avail = self.state_em(traj['avail'])
+    
+        locs = torch.cat((lngs, lats, avail), dim = 2)
 
         # map the coords into 16-dim vector
         locs = F.tanh(self.process_coords(locs))

@@ -1,0 +1,18 @@
+{
+    "dist_gap_mean": 5.192321973981031,
+    "dist_gap_std": 4.831462495290844,
+    "time_gap_mean": 10.048382598380295,
+    "time_gap_std": 8.215246804713134,
+    "lngs_std": 0.042341374749457594,
+    "lngs_mean": 126.63735823734483,
+    "lats_mean": 45.74264114020374,
+    "dist_std": 5.158761502083366,
+    "dist_mean": 7.998780393520511,
+    "lats_std": 0.02772469092368339,
+    "time_mean": 15.788219609130216,
+    "time_std": 8.085908097845735,
+    "train_set": ["trainpath-fmm-gnn-spatial/150103.h5", "trainpath-fmm-gnn-spatial/150104.h5", "trainpath-fmm-gnn-spatial/150105.h5"], 
+    "eval_set": ["validpath-fmm-gnn-spatial/150106.h5"],
+    "test_set": ["testpath-fmm-gnn-spatial/150107.h5"]
+}
+

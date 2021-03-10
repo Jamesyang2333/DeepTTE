@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-import GeoConv
+import models.base.GeoConv
 import numpy as np
 
 from torch.autograd import Variable
@@ -19,9 +19,9 @@ class Net(nn.Module):
         self.num_filter = num_filter
         self.pooling_method = pooling_method
 
-        self.geo_conv = GeoConv.Net(kernel_size = kernel_size, num_filter = num_filter)
+        self.geo_conv = models.base.GeoConv.Net(kernel_size = kernel_size, num_filter = num_filter)
 	#num_filter: output size of each GeoConv + 1:distance of local path + attr_size: output size of attr component
-	if rnn == 'lstm':
+        if rnn == 'lstm':
             self.rnn = nn.LSTM(input_size = num_filter + 1 + attr_size, \
                                       hidden_size = 128, \
                                       num_layers = 2, \
@@ -85,8 +85,9 @@ class Net(nn.Module):
         conv_locs = torch.cat((conv_locs, expand_attr_t), dim = 2)
 
         lens = map(lambda x: x - self.kernel_size + 1, traj['lens'])
-
-        packed_inputs = nn.utils.rnn.pack_padded_sequence(conv_locs, lens, batch_first = True)
+        
+        # turn map into list
+        packed_inputs = nn.utils.rnn.pack_padded_sequence(conv_locs, list(lens), batch_first = True)
 
         packed_hiddens, (h_n, c_n) = self.rnn(packed_inputs)
         hiddens, lens = nn.utils.rnn.pad_packed_sequence(packed_hiddens, batch_first = True)

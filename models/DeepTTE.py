@@ -1,9 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 import utils
-import base
+import models.base
 import numpy as np
 
 from torch.autograd import Variable
@@ -23,6 +22,13 @@ class EntireEstimator(nn.Module):
         self.hid2out = nn.Linear(hidden_size, 1)
 
     def forward(self, attr_t, sptm_t):
+        
+        if len(list(attr_t.size())) == 1:
+            attr_t = torch.unsqueeze(attr_t, 0)
+        
+        if len(list(sptm_t.size())) == 1:
+            sptm_t = torch.unsqueeze(sptm_t, 0)
+            
         inputs = torch.cat((attr_t, sptm_t), dim = 1)
 
         hidden = F.leaky_relu(self.input2hid(inputs))
@@ -100,10 +106,10 @@ class Net(nn.Module):
 
     def build(self):
         # attribute component
-        self.attr_net = base.Attr.Net()
+        self.attr_net = models.base.Attr.Net()
 
         # spatio-temporal component
-        self.spatio_temporal = base.SpatioTemporal.Net(attr_size = self.attr_net.out_size(), \
+        self.spatio_temporal = models.base.SpatioTemporal.Net(attr_size = self.attr_net.out_size(), \
                                                        kernel_size = self.kernel_size, \
                                                        num_filter = self.num_filter, \
                                                        pooling_method = self.pooling_method
